@@ -4,10 +4,12 @@
 
 @import '~@react-md/typography/dist/mixins';
 @import '~@react-md/utils/dist/mixins';
+
 @import './variables';
 @import './file-input/mixins';
 @import './label/mixins';
 @import './select/mixins';
+@import './slider/mixins';
 @import './toggle/mixins';
 @import './text-field/mixins';
 
@@ -48,6 +50,7 @@
   // has to come after text field since it overrides some of the
   // text-field-container styles
   @include react-md-select;
+  @include react-md-slider;
 
   .rmd-fieldset {
     @include rmd-fieldset;

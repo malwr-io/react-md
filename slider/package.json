@@ -1,0 +1,64 @@
+{
+  "name": "@react-md/slider",
+  "version": "2.2.0",
+  "description": "Create an accessible slider that allows a user to choose numbers from a specified range.",
+  "scripts": {
+    "build": "dev-utils build",
+    "clean": "dev-utils clean",
+    "test": "dev-utils test"
+  },
+  "main": "./lib/index.js",
+  "module": "./es/index.js",
+  "types": "./types/index.d.ts",
+  "sideEffects": [
+    "dist/**/*"
+  ],
+  "files": [
+    "es/*",
+    "lib/*",
+    "types/*",
+    "src/*",
+    "dist/*"
+  ],
+  "author": "Mikkel Laursen <mlaursen03@gmail.com>",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mlaursen/react-md.git",
+    "directory": "packages/slider"
+  },
+  "bugs": {
+    "url": "https://github.com/mlaursen/react-md/issues"
+  },
+  "homepage": "https://react-md.dev/packages/slider/demos",
+  "keywords": [
+    "react-md",
+    "material design",
+    "react",
+    "slider",
+    "range",
+    "accessible",
+    "component",
+    "components"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "@react-md/states": "^2.1.2",
+    "@react-md/theme": "^2.1.2",
+    "@react-md/transition": "^2.1.2",
+    "@react-md/utils": "^2.1.0",
+    "classnames": "^2.2.6"
+  },
+  "devDependencies": {
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1"
+  },
+  "peerDependencies": {
+    "react": ">= 16.8"
+  },
+  "optionalDependencies": {
+    "prop-types": ">= 15.6"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

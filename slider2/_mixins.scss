@@ -1,0 +1,242 @@
+////
+/// @group slider
+/// @since 2.5.0
+////
+
+@import '~@react-md/states/dist/mixins';
+@import '~@react-md/transition/dist/mixins';
+@import '~@react-md/utils/dist/mixins';
+
+@import './variables';
+
+/// @access private
+@mixin rmd-slider-thumb {
+  @include rmd-utils-hide-focus-outline;
+  @include rmd-form-theme(
+    background-color,
+    if($rmd-slider-is-same-track-color, slider-color, slider-active-color)
+  );
+  @include rmd-form-theme(height, slider-thumb-size);
+  @include rmd-form-theme(width, slider-thumb-size);
+  @include rmd-utils-mouse-only {
+    &--hoverable:hover::after {
+      transform: scale(2);
+    }
+
+    &--dragging::after,
+    &--dragging:hover::after {
+      transform: scale(2.5);
+    }
+  }
+  @include rmd-utils-keyboard-only {
+    &:focus::after {
+      transform: scale(2);
+    }
+
+    &--dragging::after {
+      transform: scale(2.5);
+    }
+  }
+
+  border-radius: $rmd-slider-thumb-radius;
+  position: absolute;
+  z-index: 1;
+
+  &::after {
+    @include rmd-transition(standard);
+    @include rmd-utils-pseudo-element(null);
+
+    background-color: inherit;
+    opacity: 0.3;
+    transition: transform $rmd-transition-standard-time;
+  }
+
+  &--horizontal {
+    @include rmd-utils-rtl-auto(left, rmd-form-theme-var(slider-offset));
+
+    transform: translateX(-50%);
+    transition-property: left;
+  }
+
+  @if $rmd-slider-include-vertical {
+    &--vertical {
+      @include rmd-form-theme(bottom, slider-offset);
+
+      transform: translateY(50%);
+      transition-property: bottom;
+    }
+  }
+
+  &--animate {
+    @include rmd-transition(standard);
+
+    transition-duration: $rmd-transition-standard-time;
+  }
+
+  @if $rmd-slider-thumb-disabled-inset != null {
+    &--disabled {
+      background-color: rmd-theme-var(background);
+      border-radius: 0;
+
+      &::before {
+        background-color: $rmd-slider-thumb-disabled-color;
+        border-radius: $rmd-slider-thumb-radius;
+        bottom: $rmd-slider-thumb-disabled-inset;
+        content: '';
+        left: $rmd-slider-thumb-disabled-inset;
+        pointer-events: none;
+        position: absolute;
+        right: $rmd-slider-thumb-disabled-inset;
+        top: $rmd-slider-thumb-disabled-inset;
+      }
+    }
+  }
+}
+
+/// This creates the slider and the "track". The way this works is that the
+/// track is made up of an "inactive" state with the `::before` pseudo element
+/// while the "active" state uses the `::after` element which covers the
+/// "inactive" state.
+///
+/// @access private
+@mixin rmd-slider-track {
+  position: relative;
+
+  &--hoverable:hover {
+    cursor: pointer;
+  }
+
+  &--dense {
+    @include rmd-form-theme-update-var(slider-size, slider-dense-size);
+  }
+
+  &--animate::after {
+    @include rmd-transition(standard);
+
+    transition-duration: $rmd-transition-standard-time;
+  }
+
+  &::before,
+  &::after {
+    @if $rmd-slider-is-same-track-color {
+      @include rmd-form-theme(background-color, slider-color);
+    }
+
+    content: '';
+    pointer-events: none;
+    position: absolute;
+  }
+
+  &::before {
+    @if not $rmd-slider-is-same-track-color {
+      @include rmd-form-theme(background-color, slider-inactive-color);
+    }
+
+    opacity: $rmd-slider-inactive-track-opacity;
+    z-index: $rmd-slider-inactive-track-z-index;
+  }
+
+  &::after {
+    @if not $rmd-slider-is-same-track-color {
+      @include rmd-form-theme(background-color, slider-active-color);
+    }
+
+    opacity: $rmd-slider-active-track-opacity;
+    z-index: $rmd-slider-active-track-z-index;
+  }
+
+  &--disabled {
+    @if $rmd-slider-is-same-track-color {
+      @include rmd-form-theme-update-var(
+        slider-color,
+        $rmd-slider-disabled-track-color
+      );
+
+      &::after {
+        @include rmd-form-theme-update-var(slider-active-size, 0px);
+      }
+
+      @if $rmd-slider-inactive-track-opacity != null {
+        &::before {
+          opacity: 1;
+        }
+      }
+
+      @if $rmd-slider-active-track-opacity != null {
+        &::after {
+          opacity: 1;
+        }
+      }
+    }
+  }
+
+  &--horizontal {
+    @include rmd-slider-track-horizontal;
+  }
+
+  @if $rmd-slider-include-vertical {
+    &--vertical {
+      @include rmd-slider-track-vertical;
+    }
+  }
+}
+
+/// @access private
+@mixin rmd-slider-track-horizontal {
+  @include rmd-form-theme(height, slider-size);
+
+  align-items: center;
+  display: flex;
+  width: 100%;
+
+  &::before {
+    @include rmd-form-theme(height, slider-inactive-size);
+
+    width: 100%;
+  }
+
+  &::after {
+    @include rmd-utils-rtl-auto(left, 0);
+    @include rmd-form-theme(height, slider-active-size);
+    @include rmd-form-theme(max-width, slider-offset);
+
+    transition-property: max-width;
+    width: 100%;
+  }
+}
+
+/// @access private
+@mixin rmd-slider-track-vertical {
+  @include rmd-form-theme(height, slider-vertical-size);
+  @include rmd-form-theme(width, slider-size);
+
+  justify-content: center;
+  display: inline-flex;
+
+  &::before {
+    @include rmd-form-theme(width, slider-inactive-size);
+
+    height: 100%;
+  }
+
+  &::after {
+    @include rmd-form-theme(max-height, slider-offset);
+    @include rmd-form-theme(width, slider-active-size);
+
+    bottom: 0;
+    height: 100%;
+    transition-property: max-height;
+  }
+}
+
+/// Creates all the styles for this package as well as defining all the theme
+/// CSS variables.
+@mixin react-md-slider {
+  .rmd-slider-thumb {
+    @include rmd-slider-thumb;
+  }
+
+  .rmd-slider-track {
+    @include rmd-slider-track;
+  }
+}

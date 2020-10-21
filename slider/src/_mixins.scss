@@ -1,0 +1,261 @@
+////
+/// @group slider
+/// @since 2.5.0
+////
+
+@import '~@react-md/states/dist/mixins';
+@import '~@react-md/transition/dist/mixins';
+@import '~@react-md/utils/dist/mixins';
+
+@import './functions';
+@import './variables';
+
+/// Creates the styles for one of the slider's theme values. This is mostly
+/// going to be an internal helper mixin util.
+///
+/// @param {String} property - The property to set a `rmd-slider-theme-values`
+/// value to.
+/// @param {String} theme-style - One of the keys of `rmd-slider-theme-values`
+/// to extract a value from.
+/// @param {Color|String|Number} fallback [null] - A fallback value to use if
+/// the css variable isn't set somehow. This will default to automatically
+/// retrieving the default value from the `rmd-slider-theme-values` map when
+/// `null`.
+@mixin rmd-slider-theme($property, $theme-style: $property, $fallback: null) {
+  @include rmd-theme-apply-rmd-var(
+    $property,
+    $theme-style,
+    $rmd-slider-theme-values,
+    slider
+  );
+}
+
+/// Updates one of the slider's theme variables with the new value for the
+/// section of your app.
+///
+/// @param {String} theme-style - The slider theme style type to update. This
+/// should be one of the `$rmd-slider-theme-values` keys.
+/// @param {Color|String|Number} value - The new value to use.
+@mixin rmd-slider-theme-update-var($theme-style, $value) {
+  @include rmd-theme-update-rmd-var(
+    $value,
+    $theme-style,
+    $rmd-slider-theme-values,
+    slider
+  );
+}
+
+/// @access private
+@mixin rmd-slider-thumb {
+  @include rmd-utils-hide-focus-outline;
+  @include rmd-slider-theme(
+    background-color,
+    if($rmd-slider-is-same-track-color, color, active-color)
+  );
+  @include rmd-slider-theme(height, thumb-size);
+  @include rmd-slider-theme(width, thumb-size);
+  @include rmd-utils-mouse-only {
+    &:hover::after {
+      transform: scale(2);
+    }
+
+    &--dragging::after,
+    &--dragging:hover::after {
+      transform: scale(2.5);
+    }
+  }
+  @include rmd-utils-keyboard-only {
+    &:focus::after {
+      transform: scale(2);
+    }
+
+    &--dragging::after {
+      transform: scale(2.5);
+    }
+  }
+
+  border-radius: $rmd-slider-thumb-radius;
+  position: absolute;
+  z-index: 1;
+
+  &::after {
+    @include rmd-transition(standard);
+    @include rmd-utils-pseudo-element(null);
+
+    background-color: inherit;
+    opacity: 0.3;
+    transition: transform $rmd-transition-standard-time;
+  }
+
+  &--horizontal {
+    @include rmd-utils-rtl-auto(left, rmd-slider-theme-var(offset));
+
+    transform: translateX(-50%);
+    transition-property: left;
+  }
+
+  @if $rmd-slider-include-vertical {
+    &--vertical {
+      @include rmd-slider-theme(bottom, offset);
+
+      transform: translateY(50%);
+      transition-property: bottom;
+    }
+  }
+
+  &--animate {
+    @include rmd-transition(standard);
+
+    transition-duration: $rmd-transition-standard-time;
+  }
+}
+
+/// This creates the slider and the "track". The way this works is that the
+/// track is made up of an "inactive" state with the `::before` pseudo element
+/// while the "active" state uses the `::after` element which covers the
+/// "inactive" state.
+///
+/// @access private
+@mixin rmd-slider-track {
+  position: relative;
+
+  &--hoverable:hover {
+    cursor: pointer;
+  }
+
+  &--dense {
+    @include rmd-slider-theme-update-var(size, dense-size);
+  }
+
+  &--animate::after {
+    @include rmd-transition(standard);
+
+    transition-duration: $rmd-transition-standard-time;
+  }
+
+  &::before,
+  &::after {
+    @if $rmd-slider-is-same-track-color {
+      @include rmd-slider-theme(background-color, color);
+    }
+
+    content: '';
+    pointer-events: none;
+    position: absolute;
+  }
+
+  &::before {
+    @if not $rmd-slider-is-same-track-color {
+      @include rmd-slider-theme(background-color, inactive-color);
+    }
+
+    opacity: $rmd-slider-inactive-track-opacity;
+    z-index: $rmd-slider-inactive-track-z-index;
+  }
+
+  &::after {
+    @if not $rmd-slider-is-same-track-color {
+      @include rmd-slider-theme(background-color, active-color);
+    }
+
+    opacity: $rmd-slider-active-track-opacity;
+    z-index: $rmd-slider-active-track-z-index;
+  }
+}
+
+/// @access private
+@mixin rmd-slider-track-horizontal {
+  @include rmd-slider-theme(height, size);
+
+  align-items: center;
+  display: flex;
+  width: 100%;
+
+  &::before {
+    @include rmd-slider-theme(height, inactive-size);
+
+    width: 100%;
+  }
+
+  &::after {
+    @include rmd-utils-rtl-auto(left, 0);
+    @include rmd-slider-theme(height, active-size);
+    @include rmd-slider-theme(max-width, offset);
+
+    transition-property: max-width;
+    width: 100%;
+  }
+}
+
+/// @access private
+@mixin rmd-slider-track-vertical {
+  @include rmd-slider-theme(height, vertical-size);
+  @include rmd-slider-theme(width, size);
+
+  justify-content: center;
+  display: inline-flex;
+
+  &::before {
+    @include rmd-slider-theme(width, inactive-size);
+
+    height: 100%;
+  }
+
+  &::after {
+    @include rmd-slider-theme(max-height, offset);
+    @include rmd-slider-theme(width, active-size);
+
+    bottom: 0;
+    height: 100%;
+    transition-property: max-height;
+  }
+}
+
+/// Creates all the styles for this package as well as defining all the theme
+/// CSS variables.
+@mixin react-md-slider {
+  @include rmd-theme-create-root-theme($rmd-slider-theme-values, slider);
+
+  .rmd-slider-thumb {
+    @include rmd-slider-thumb;
+  }
+
+  .rmd-slider-track {
+    @include rmd-slider-track;
+
+    &--disabled {
+      @if $rmd-slider-is-same-track-color {
+        @include rmd-slider-theme-update-var(
+          color,
+          rmd-theme-var(text-disabled-on-background)
+        );
+
+        &::after {
+          @include rmd-slider-theme-update-var(active-size, 0px);
+        }
+
+        @if $rmd-slider-inactive-track-opacity != null {
+          &::before {
+            opacity: 1;
+          }
+        }
+
+        @if $rmd-slider-active-track-opacity != null {
+          &::after {
+            opacity: 1;
+          }
+        }
+      }
+    }
+
+    &--horizontal {
+      @include rmd-slider-track-horizontal;
+    }
+
+    @if $rmd-slider-include-vertical {
+      &--vertical {
+        @include rmd-slider-track-vertical;
+      }
+    }
+  }
+}

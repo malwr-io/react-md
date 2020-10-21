@@ -9,6 +9,7 @@
 
 @import './label/variables';
 @import './select/variables';
+@import './slider/variables';
 @import './text-field/variables';
 @import './toggle/variables';
 
@@ -90,4 +91,17 @@ $rmd-form-theme-values: (
   text-placeholder-height: $rmd-text-field-height,
   text-placeholder-dense-height: $rmd-text-field-dense-height,
   textarea-padding: $rmd-textarea-vertical-padding,
+  slider-size: $rmd-slider-size,
+  slider-dense-size: $rmd-slider-dense-size,
+  slider-vertical-size: $rmd-slider-vertical-size,
+  slider-active-size: $rmd-slider-active-track-size,
+  slider-inactive-size: $rmd-slider-inactive-track-size,
+  slider-color:
+    if($rmd-slider-is-same-track-color, $rmd-slider-active-track-color, null),
+  slider-active-color:
+    if($rmd-slider-is-same-track-color, null, $rmd-slider-active-track-color),
+  slider-inactive-color:
+    if($rmd-slider-is-same-track-color, null, $rmd-slider-inactive-track-color),
+  slider-offset: null,
+  slider-thumb-size: $rmd-slider-thumb-size,
 ) !default;

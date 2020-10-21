@@ -1,0 +1,26 @@
+/** this is an auto-generated file from @react-md/dev-utils */
+export default {
+  "rmd-slider-include-vertical": true,
+  "rmd-slider-size": "2rem",
+  "rmd-slider-dense-size": "1.5rem",
+  "rmd-slider-vertical-size": "15rem",
+  "rmd-slider-active-track-size": "0.375rem",
+  "rmd-slider-active-track-color": "var(--rmd-theme-secondary, #f50057)",
+  "rmd-slider-active-track-opacity": "",
+  "rmd-slider-inactive-track-size": "0.25rem",
+  "rmd-slider-inactive-track-color": "var(--rmd-theme-secondary, #f50057)",
+  "rmd-slider-inactive-track-opacity": 0.5,
+  "rmd-slider-inactive-track-z-index": 1,
+  "rmd-slider-active-track-z-index": 2,
+  "rmd-slider-theme-values": {
+    size: "2rem",
+    "dense-size": "1.5rem",
+    "vertical-size": "15rem",
+    "active-size": "0.375rem",
+    "inactive-size": "0.25rem",
+    color: "var(--rmd-theme-secondary, #f50057)",
+    "active-color": null,
+    "inactive-color": null,
+    offset: null,
+  },
+};
